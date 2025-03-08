@@ -13,7 +13,7 @@ index 5e2c998..6c91e6c 100644
      room_goto(room_transition)
  }
 diff --git a/gml_Object_obj_menu_Create_0.gml b/gml_Object_obj_menu_Create_0.gml
-index b9ed9f8..0eaf048 100644
+index 0363fe7..40ab24b 100644
 --- a/gml_Object_obj_menu_Create_0.gml
 +++ b/gml_Object_obj_menu_Create_0.gml
 @@ -19,7 +19,7 @@ else
@@ -35,28 +35,19 @@ index b9ed9f8..0eaf048 100644
  post_font_array = scr_random_font_setup(post_text, pv_font)
  void_font_array = scr_random_font_setup(void_text, pv_font)
 diff --git a/gml_Object_obj_options_Step_0.gml b/gml_Object_obj_options_Step_0.gml
-index ef39583..7d9c2dd 100644
+index d32d986..83b2eba 100644
 --- a/gml_Object_obj_options_Step_0.gml
 +++ b/gml_Object_obj_options_Step_0.gml
-@@ -77,7 +77,7 @@ if (slider_holding != -1)
-                 global.MOUSE_SENSE_V = max(global.MOUSE_SENSE_MIN, (slider_val[slider_holding] * global.MOUSE_SENSE_MAX))
-                 break
-         }
--        
-+
-     }
-     else
-     {
 @@ -85,7 +85,7 @@ if (slider_holding != -1)
          slider_holding = -1
      }
  }
--if (mouse_check_button_pressed(1) && ((option_selected != -1) && (setting_key == -1)))
-+if ((mouse_check_button_pressed(1) || mouse_check_button_pressed(2)) && ((option_selected != -1) && (setting_key == -1)))
+-if (mouse_check_button_pressed(mb_left) && option_selected != -1 && setting_key == -1)
++if ((mouse_check_button_pressed(mb_left)||mouse_check_button_pressed(mb_right)) && option_selected != -1 && setting_key == -1)
  {
      if (option_type[option_selected] == "key")
          setting_key = option_selected
-@@ -177,8 +177,102 @@ if (mouse_check_button_pressed(1) && ((option_selected != -1) && (setting_key ==
+@@ -177,6 +177,100 @@ if (mouse_check_button_pressed(mb_left) && option_selected != -1 && setting_key
              else
                  option_text[option_selected] = "Accessibility Mode (ON)"
              break
@@ -155,35 +146,10 @@ index ef39583..7d9c2dd 100644
 +                option_text[option_selected] = "Start with upgrade (OFF)"
 +            break
      }
--    
-+
+ 
      if (option_type[option_selected] == "menu")
-     {
-         submenu = option[option_selected]
-@@ -217,7 +311,7 @@ if (setting_key != -1)
-                 global.KEY_SUICIDE = keyboard_lastkey
-                 break
-         }
--        
-+
-         setting_key = -1
-     }
- }
-diff --git a/gml_Object_obj_score_screen_Create_0.gml b/gml_Object_obj_score_screen_Create_0.gml
-index ccdf30e..fd2e4e9 100644
---- a/gml_Object_obj_score_screen_Create_0.gml
-+++ b/gml_Object_obj_score_screen_Create_0.gml
-@@ -172,7 +172,7 @@ for (i = 0; i < bonuses; i += 1)
-             bonus_amount[i] = max(0, ((((global.LEVEL + 1) * 7) - global.HITS_TAKEN) * 250))
-             break
-     }
--    
-+
-     bonus_x[i] = (bonus_start_x + (bonus_x_sep * bonus_xpos))
-     bonus_y[i] = (bonus_start_y + (bonus_y_sep * bonus_row))
-     bonus_scale[i] = 8
 diff --git a/gml_Object_obj_setup_Create_0.gml b/gml_Object_obj_setup_Create_0.gml
-index 5ade9e7..bc27b86 100644
+index 6288495..6245c36 100644
 --- a/gml_Object_obj_setup_Create_0.gml
 +++ b/gml_Object_obj_setup_Create_0.gml
 @@ -1,6 +1,6 @@
@@ -196,7 +162,7 @@ index 5ade9e7..bc27b86 100644
  global.ACC_MODE = 0
  global.SHOOT_EFFECT_FACTOR = 1
 diff --git a/gml_Object_obj_stats_screen_Step_0.gml b/gml_Object_obj_stats_screen_Step_0.gml
-index a6d3bbc..3db41ef 100644
+index 4eab532..e49e4fe 100644
 --- a/gml_Object_obj_stats_screen_Step_0.gml
 +++ b/gml_Object_obj_stats_screen_Step_0.gml
 @@ -7,7 +7,8 @@ if keyboard_check_pressed(vk_space)
@@ -210,21 +176,20 @@ index a6d3bbc..3db41ef 100644
          room_goto(room_game)
      }
 diff --git a/gml_Script_scr_generate_upgrades.gml b/gml_Script_scr_generate_upgrades.gml
-index f92cc12..0a8c47d 100644
+index 60b0ff3..9dbf1a1 100644
 --- a/gml_Script_scr_generate_upgrades.gml
 +++ b/gml_Script_scr_generate_upgrades.gml
-@@ -4,7 +4,11 @@ if (_amount > 0)
+@@ -4,7 +4,10 @@ if (_amount > 0)
  {
      for (var _i = 0; _i < _amount; _i += 1)
      {
--        upgrade[_i] = irandom((obj_upgrade_list.upgrades - 1))
+-        upgrade[_i] = irandom(obj_upgrade_list.upgrades - 1)
 +        if (global.FORCE_UPGRADE >= 0 && !global.START_WITH_UPGRADE)
 +            upgrade[_i] = global.FORCE_UPGRADE
 +        else
 +            upgrade[_i] = irandom((obj_upgrade_list.upgrades - 1))
-+
          while scr_upgrade_got(upgrade[_i])
-             upgrade[_i] = irandom((obj_upgrade_list.upgrades - 1))
+             upgrade[_i] = irandom(obj_upgrade_list.upgrades - 1)
          if (_i > 0)
 diff --git a/gml_Script_scr_load_settings.gml b/gml_Script_scr_load_settings.gml
 index 855cd1c..79cf5ff 100644
@@ -316,19 +281,10 @@ index 28a7774..287a237 100644
  
  scr_options_update()
 diff --git a/gml_Script_scr_options_update.gml b/gml_Script_scr_options_update.gml
-index b79b561..655812d 100644
+index e1993af..061c5ef 100644
 --- a/gml_Script_scr_options_update.gml
 +++ b/gml_Script_scr_options_update.gml
-@@ -21,7 +21,7 @@ for (i = 0; i < options; i += 1)
-                 slider_val[i] = (global.MOUSE_SENSE_V / global.MOUSE_SENSE_MAX)
-                 break
-         }
--        
-+
-         slider_x[i] = (slider_dots_x + (slider_val[i] * slider_w))
-         for (ii = 0; ii < slider_dots; ii += 1)
-         {
-@@ -55,7 +55,72 @@ for (i = 0; i < options; i += 1)
+@@ -55,6 +55,71 @@ for (i = 0; i < options; i += 1)
                  if global.ACC_MODE
                      option_text[i] = "Accessibility mode (ON)"
                  break
@@ -398,12 +354,10 @@ index b79b561..655812d 100644
 +                    option_text[i] = "Start with upgrade (OFF)"
 +                break
          }
--        
-+
+ 
      }
- }
 diff --git a/gml_Script_scr_player_draw_gui_elements.gml b/gml_Script_scr_player_draw_gui_elements.gml
-index daa1b41..4dae3c3 100644
+index f19be7a..8122345 100644
 --- a/gml_Script_scr_player_draw_gui_elements.gml
 +++ b/gml_Script_scr_player_draw_gui_elements.gml
 @@ -18,6 +18,9 @@ if debug
@@ -414,27 +368,26 @@ index daa1b41..4dae3c3 100644
 +    draw_text(472, 140, ("vsp:" + string(vsp)))
 +    draw_text(472, 156, ("sp:" + string(sqrt(power(hsp, 2) + power(vsp, 2)))))
      draw_set_color(hp_bar_border_col)
-     draw_rectangle((hp_bar_x - hp_bar_border_wh), (hp_bar_y - hp_bar_border_wh), ((hp_bar_x + hp_bar_w) + hp_bar_border_wh), ((hp_bar_y + hp_bar_h) + hp_bar_border_wh), 0)
+     draw_rectangle((hp_bar_x - hp_bar_border_wh), (hp_bar_y - hp_bar_border_wh), (hp_bar_x + hp_bar_w + hp_bar_border_wh), (hp_bar_y + hp_bar_h + hp_bar_border_wh), false)
      draw_set_color(hp_bar_col)
 diff --git a/gml_Script_scr_reset_upgrades.gml b/gml_Script_scr_reset_upgrades.gml
-index 1738f97..3e712ef 100644
+index 1738f97..3c47d47 100644
 --- a/gml_Script_scr_reset_upgrades.gml
 +++ b/gml_Script_scr_reset_upgrades.gml
 @@ -1,2 +1,4 @@
  global.LAST_UPGRADE = "none"
  obj_upgrade_list.player_upgrades = 0
 +if(global.FORCE_UPGRADE >= 0 && global.START_WITH_UPGRADE)
-+  scr_upgrade_get(global.FORCE_UPGRADE)
-\ No newline at end of file
++    scr_upgrade_get(global.FORCE_UPGRADE)
 diff --git a/gml_Script_scr_setup_stats.gml b/gml_Script_scr_setup_stats.gml
-index 2f7ee02..0dd9075 100644
+index 2f7ee02..54c051d 100644
 --- a/gml_Script_scr_setup_stats.gml
 +++ b/gml_Script_scr_setup_stats.gml
 @@ -1,5 +1,7 @@
  scr_reset_level_time()
  global.LEVEL = 0
 +if(global.START_LEVEL > 0)
-+  global.LEVEL = global.START_LEVEL
++    global.LEVEL = global.START_LEVEL
  global.CORRIDORS_ONLY = 0
  global.TIME = 0
  global.LEVEL_TIME = 0

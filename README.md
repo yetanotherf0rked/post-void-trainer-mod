@@ -1,7 +1,5 @@
 # Post Void trainer mod
 
-![preview](https://cdn.discordapp.com/attachments/741329513031663649/744673245889822820/unknown.png)
-
 ## Features
 
 * Adds a "Trainer" menu in the settings
@@ -22,17 +20,32 @@
 
 ### Pre-requirements
 
-* [UndertaleModTool](https://github.com/krzys-h/UndertaleModTool/releases)
-* [git](http://git-scm.com/download/win) to apply the mod's diffs
+* **[UndertaleModCLI](https://github.com/UnderminersTeam/UndertaleModTool/releases/tag/bleeding-edge)** *will be downloaded automatically if not found in `UMT_CLI`*
+* **[git](http://git-scm.com/download/win)** to apply the mod's diffs
+* **Post Void version 1.0.3b**: This Trainer Mod is built for Post Void version 1.0.3b. If you're on a different version, follow the downgrade instructions below.
+* **PowerShell:** The installation script is a PowerShell script, so make sure you're running it on a compatible Windows system.
 
 ### Manual install
+- Clone this repo
+- Launch the `install.ps1` script
 
-* Go to `C:\Program Files (x86)\Steam\steamapps\common\Post Void\`
-* [Download the tarball of this repository](https://github.com/nmussy/post-void-trainer-mod/archive/master.zip), and export it in the Post Void folder
-* Open `data.win` with UndertaleModtool
-* `Scripts > Run bultin script > ExportAllCode.csx`
-* Run `create_trainer_mod_files.bat`
-* `Scripts > Run other script...`, and open `Import_GML.csx`
-* Select generated the `trainer_mod_files` directory to be imported
-* When asked to `Do you want to automatically attempt to link imported code?`, say Yes
-* `File > Save` to save your modded `data.win`. It's advised that you create a duplicate of your modded and clean `data.win` files, and rename/overwrite them as needed.
+### What the script does 
+- If not found, download UndertaleModCLI.exe from [UndertaleModTool's Bleeding Edge assets](https://github.com/UnderminersTeam/UndertaleModTool/releases/tag/bleeding-edge)
+- Perform necessary checksums and paths checks
+- Dump the patched files found in `trainer_mod.patch` from the game files.
+
+### Downgrading Post Void
+1. Press `Win + R` to open the console
+```
+steam://open/console
+```
+2. Download the 1.0.3b manifest
+```
+download_depot 1285670 1285671 8036901950432469698
+```
+3. Copy the files from `C:\Program Files (x86)\Steam\steamapps\content\app_1285670\depot_1285671` to `C:\Program Files (x86)\Steam\steamapps\common\Post Void`
+
+Visit [this page](https://steamdb.info/depot/1285671/manifests/) for more information.
+
+## Further improvements
+- Will work on 1.4c as soon as there's a functional compiler/decompiler for it.
