@@ -1,7 +1,7 @@
-From dcd148822a6b4e8a3671088b755d89280b04ebee Mon Sep 17 00:00:00 2001
+From 2fef0960e8bc2df003fd611b34ae66a15089679d Mon Sep 17 00:00:00 2001
 From: yetanotherf0rked <58505261+yetanotherf0rked@users.noreply.github.com>
-Date: Mon, 10 Mar 2025 19:27:31 +0100
-Subject: [PATCH] 1.4c trainer patch
+Date: Mon, 10 Mar 2025 23:41:08 +0100
+Subject: [PATCH] 1.4c trainer
 
 ---
  gml_GlobalScript_Localization.gml             |  2 +-
@@ -9,17 +9,18 @@ Subject: [PATCH] 1.4c trainer patch
  gml_GlobalScript_scr_load_settings.gml        |  4 +
  gml_GlobalScript_scr_options_submenu.gml      | 40 ++++++--
  gml_GlobalScript_scr_options_update.gml       | 66 +++++++++++++
- ...balScript_scr_player_draw_gui_elements.gml |  4 +
+ ...balScript_scr_player_draw_gui_elements.gml |  5 +-
  gml_GlobalScript_scr_reset_upgrades.gml       |  3 +
  gml_GlobalScript_scr_setup_stats.gml          |  2 +
  gml_Object_obj_level_end_timer_Alarm_0.gml    |  3 +-
  gml_Object_obj_options_Step_0.gml             | 93 ++++++++++++++++++-
  gml_Object_obj_preload_Create_0.gml           |  2 +-
+ gml_Object_obj_setup_Create_0.gml             |  2 +-
  gml_Object_obj_stats_screen_Step_0.gml        |  3 +-
- 12 files changed, 213 insertions(+), 14 deletions(-)
+ 13 files changed, 214 insertions(+), 16 deletions(-)
 
 diff --git a/gml_GlobalScript_Localization.gml b/gml_GlobalScript_Localization.gml
-index ef4109a..e00bdb3 100644
+index ef4109a..1a4ed78 100644
 --- a/gml_GlobalScript_Localization.gml
 +++ b/gml_GlobalScript_Localization.gml
 @@ -122,7 +122,7 @@ function tr()
@@ -27,7 +28,7 @@ index ef4109a..e00bdb3 100644
      if (f == undefined)
      {
 -        return "(Unknown key '" + string(_key) + "')";
-+        return "> " + string(_key);
++        return ">" + string(_key);
      }
      var i = string_pos("%", f);
      if (i == 0)
@@ -210,17 +211,25 @@ index bd8934c..7878c1a 100644
          }
      }
 diff --git a/gml_GlobalScript_scr_player_draw_gui_elements.gml b/gml_GlobalScript_scr_player_draw_gui_elements.gml
-index db98d1c..dc1ea6e 100644
+index db98d1c..65ca5ea 100644
 --- a/gml_GlobalScript_scr_player_draw_gui_elements.gml
 +++ b/gml_GlobalScript_scr_player_draw_gui_elements.gml
-@@ -24,6 +24,10 @@ function scr_player_draw_gui_elements()
+@@ -11,7 +11,7 @@ function scr_player_draw_gui_elements()
+             draw_sprite(death_cd_sprite[death_cd_number], death_cd_ii, 240 + cd_extra_x[death_cd_number], 135 + cd_extra_y[death_cd_number]);
+         }
+     }
+-    if (debug)
++    if (global.DEBUG_MODE)
+     {
+         draw_set_color(c_white);
+         draw_set_valign(fa_top);
+@@ -24,6 +24,9 @@ function scr_player_draw_gui_elements()
          draw_text(472, 76, "Level:" + string(global.LEVEL));
          draw_text(472, 92, "Enemies:" + string(obj_world_builder.enemy_count));
          draw_text(472, 108, "Zdir:" + string(zdir));
 +	draw_text(472, 124, "h_speed:" + string(hsp));
 +	draw_text(472, 140, "v_speed:" + string(vsp));
 +	draw_text(472, 156, "speed:" + string(sqrt(power(hsp, 2) + power(vsp, 2))));
-+        draw_text(478, 268, "FPS: " + string(fps_real));
          draw_set_color(hp_bar_border_col);
          draw_rectangle(hp_bar_x - hp_bar_border_wh, hp_bar_y - hp_bar_border_wh, hp_bar_x + hp_bar_w + hp_bar_border_wh, hp_bar_y + hp_bar_h + hp_bar_border_wh, false);
          draw_set_color(hp_bar_col);
@@ -387,6 +396,18 @@ index 56a2c25..1aff613 100644
  global.HS_VERSION = "1";
  global.MENU_FONT = -1;
  assetLoadPhase = 0;
+diff --git a/gml_Object_obj_setup_Create_0.gml b/gml_Object_obj_setup_Create_0.gml
+index 747158d..04dadf9 100644
+--- a/gml_Object_obj_setup_Create_0.gml
++++ b/gml_Object_obj_setup_Create_0.gml
+@@ -1,6 +1,6 @@
+ global.PAUSE_FROM_TUTORIAL = false;
+ global.DEBUG_MODE = false;
+-global.TOGGLE_DEBUG = false;
++global.TOGGLE_DEBUG = true;
+ global.FROM_GAME = false;
+ global.EXITING = false;
+ global.PAUSE_BG = -1;
 diff --git a/gml_Object_obj_stats_screen_Step_0.gml b/gml_Object_obj_stats_screen_Step_0.gml
 index fbadc51..3b062b7 100644
 --- a/gml_Object_obj_stats_screen_Step_0.gml
