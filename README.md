@@ -33,7 +33,7 @@ A trainer for Post Void 1.4c
 - Launch the install script using `.\install.ps1`.
 
 ### What the script does 
-- If not found in `UMT_CLI\`, the script suggests you to download and extract UndertaleModCLI.exe from [this PR]([https://github.com/UnderminersTeam/UndertaleModTool/releases/tag/bleeding-edge](https://github.com/UnderminersTeam/UndertaleModTool/pull/2056))
+- If not found in `UMT_CLI\`, the script suggests you to download and extract UndertaleModCLI.exe from [this PR](https://github.com/UnderminersTeam/UndertaleModTool/pull/2056).
 > **Note:** This PR from UndertaleModTool uses the Underanalyzer Compiler and Decompiler, rather than the traditional ones from UMT as I encountered issues with them.
 - Perform necessary checksums and paths checks, saves a backup file of `data.win`.
 - Dump the patched files found in `trainer_mod.patch` from the game files.
