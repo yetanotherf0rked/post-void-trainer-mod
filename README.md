@@ -1,4 +1,7 @@
-# Post Void trainer mod
+# Post Void Trainer Mod
+
+A trainer for Post Void 1.4c
+![image](https://github.com/user-attachments/assets/571ed8ef-7e5a-49af-8128-a8fa924c9ab4)
 
 ## Features
 
@@ -20,32 +23,25 @@
 
 ### Pre-requirements
 
-* **[UndertaleModCLI](https://github.com/UnderminersTeam/UndertaleModTool/releases/tag/bleeding-edge)** *will be downloaded automatically if not found in `UMT_CLI`*
 * **[git](http://git-scm.com/download/win)** to apply the mod's diffs
-* **Post Void version 1.0.3b**: This Trainer Mod is built for Post Void version 1.0.3b. If you're on a different version, follow the downgrade instructions below.
+* **[UndertaleModCLI](https://github.com/UnderminersTeam/UndertaleModTool/)** *will be downloaded automatically if not found in `UMT_CLI`*
+* **Post Void 1.4c**: This trainer is for version 1.4c. If you want the trainer for the 1.0.3b version, check [this commit](https://github.com/nmussy/post-void-trainer-mod/commit/0ac6b33477203fa270094073ebb398d09473b763).
 * **PowerShell:** The installation script is a PowerShell script, so make sure you're running it on a compatible Windows system.
 
 ### Manual install
-- Clone this repo
-- Launch the `install.ps1` script
+- Clone this repo anywhere, game will be checked for in the default path, you can specify it if not found.
+- Launch the install script using `.\install.ps1`.
 
 ### What the script does 
-- If not found, download UndertaleModCLI.exe from [UndertaleModTool's Bleeding Edge assets](https://github.com/UnderminersTeam/UndertaleModTool/releases/tag/bleeding-edge)
-- Perform necessary checksums and paths checks
+- If not found in `UMT_CLI\`, the script suggests you to download and extract UndertaleModCLI.exe from [this PR]([https://github.com/UnderminersTeam/UndertaleModTool/releases/tag/bleeding-edge](https://github.com/UnderminersTeam/UndertaleModTool/pull/2056))
+> **Note:** This PR from UndertaleModTool uses the Underanalyzer Compiler and Decompiler, rather than the traditional ones from UMT as I encountered issues with them.
+- Perform necessary checksums and paths checks, saves a backup file of `data.win`.
 - Dump the patched files found in `trainer_mod.patch` from the game files.
+- Applies the patch `trainer_mod.patch` to the dumped files using git.
+- Replaces the files and rebuilds `data.win`.
 
-### Downgrading Post Void
-1. Press `Win + R` to open the console
-```
-steam://open/console
-```
-2. Download the 1.0.3b manifest
-```
-download_depot 1285670 1285671 8036901950432469698
-```
-3. Copy the files from `C:\Program Files (x86)\Steam\steamapps\content\app_1285670\depot_1285671` to `C:\Program Files (x86)\Steam\steamapps\common\Post Void`
+## Known Issues
+- Debug Mode is broken in Tutorial.
 
-Visit [this page](https://steamdb.info/depot/1285671/manifests/) for more information.
-
-## Further improvements
-- Will work on 1.4c as soon as there's a functional compiler/decompiler for it.
+## Thanks
+Thanks to [nmussy](https://github.com/nmussy/), space_core_0352 and [colinator27](https://github.com/colinator27) from the UMT Discord for their help.
