@@ -1,13 +1,13 @@
 # ===============================================
-# Post Void Trainer Mod (1.0.3b)
+# Post Void Trainer Mod (1.4c)
 # ===============================================
 # Configuration
 $config = @{
-    GlobalVersionCheck = "1.0.3b"
+    GlobalVersionCheck = "1.4c"
     DatawinFile        = "data.win"
     DatawinBakFile     = "data.win.bak"
-    ExpectedChecksum   = "3433ABB6681C6685157F8E896C568836950FD25C679CF7AD96AE99AF39E002EF"
-    UndertaleModCliUrl = "https://github.com/UnderminersTeam/UndertaleModTool/releases/download/bleeding-edge/CLI-windows-latest-Debug-isBundled-true.zip"
+    ExpectedChecksum   = "4C20F35F731F30FFF90E04E9995A493FD723144644248577BA9DC974A7F8AB7C"
+    UndertaleModCliUrl = "https://nightly.link/UnderminersTeam/UndertaleModTool/actions/artifacts/2717254693.zip" 
     DefaultGamePath    = "C:\Program Files (x86)\Steam\steamapps\common\POST VOID"
     PatchFileName      = "trainer_mod.patch"
     PathPatch          = (Split-Path -Parent $MyInvocation.MyCommand.Definition)
