@@ -43,5 +43,10 @@ A trainer for Post Void 1.4c
 ## Known Issues
 - Debug Mode is broken in Tutorial.
 
+## Further improvements
+If I find time to implement these:
+- fix the Level Times to display the correct level when starting with a different level or looping through a level
+- add a feature to get stats such as: `average_speed`, `bumps_into_walls`, `bumps_into_enemies`, `number_of_hits_by_enemies`, `average_time_before_dashing`, `number_of_dashes`, `level_success_ratio`
+
 ## Thanks
 Thanks to [nmussy](https://github.com/nmussy/), space_core_0352 and [colinator27](https://github.com/colinator27) from the UMT Discord for their help.
