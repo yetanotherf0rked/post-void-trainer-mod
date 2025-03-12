@@ -1,7 +1,9 @@
 # Post Void Trainer Mod
 
 A trainer for Post Void 1.4c
-![image](https://github.com/user-attachments/assets/571ed8ef-7e5a-49af-8128-a8fa924c9ab4)
+
+<img src="https://github.com/user-attachments/assets/c2c43815-35cf-45df-9521-9444e7efae90" width="500" alt="Open the Debug Menu using 'M'" />
+<img src="https://github.com/user-attachments/assets/5aa0e4ea-6174-41b6-a9a6-1b2d4a8ed06d" width="500" alt="You can set training parameters in the Settings" />
 
 ## Features
 
