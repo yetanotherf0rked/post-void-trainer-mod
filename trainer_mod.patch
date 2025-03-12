@@ -1,12 +1,12 @@
-From ff09656d5bdbdf9369acf99e9f8b1253a7aeda9f Mon Sep 17 00:00:00 2001
+From dfdae1aa372de679d1694d168063def67d29183d Mon Sep 17 00:00:00 2001
 From: yetanotherf0rked <58505261+yetanotherf0rked@users.noreply.github.com>
-Date: Wed, 12 Mar 2025 08:19:32 +0100
+Date: Wed, 12 Mar 2025 14:41:17 +0100
 Subject: [PATCH] 1.4c patch
 
 ---
  gml_GlobalScript_Localization.gml             |  2 +-
  gml_GlobalScript_scr_generate_upgrades.gml    |  5 +-
- ...GlobalScript_scr_input_suicide_pressed.gml | 12 +--
+ ...GlobalScript_scr_input_suicide_pressed.gml |  1 -
  gml_GlobalScript_scr_load_settings.gml        |  4 +
  gml_GlobalScript_scr_options_submenu.gml      | 40 ++++++--
  gml_GlobalScript_scr_options_update.gml       | 66 +++++++++++++
@@ -19,7 +19,7 @@ Subject: [PATCH] 1.4c patch
  gml_Object_obj_score_controller_Draw_75.gml   |  5 -
  gml_Object_obj_setup_Create_0.gml             |  2 +-
  gml_Object_obj_stats_screen_Step_0.gml        |  3 +-
- 15 files changed, 239 insertions(+), 37 deletions(-)
+ 15 files changed, 233 insertions(+), 32 deletions(-)
 
 diff --git a/gml_GlobalScript_Localization.gml b/gml_GlobalScript_Localization.gml
 index ef4109a..1a4ed78 100644
@@ -51,34 +51,16 @@ index b8ff16a..43ed25c 100644
              {
                  upgrade[_i] = irandom(obj_upgrade_list.upgrades - 1);
 diff --git a/gml_GlobalScript_scr_input_suicide_pressed.gml b/gml_GlobalScript_scr_input_suicide_pressed.gml
-index 0b85402..325d1a8 100644
+index 0b85402..4afee84 100644
 --- a/gml_GlobalScript_scr_input_suicide_pressed.gml
 +++ b/gml_GlobalScript_scr_input_suicide_pressed.gml
-@@ -1,6 +1,10 @@
+@@ -1,6 +1,5 @@
  function scr_input_suicide_pressed()
  {
 -    return false;
-+    var _key = input_action_get_key(UnknownEnum.Value_11);
-+    if (keyboard_check_pressed(_key))
-+    {
-+        return true;
-+    }
      if (global.input_activeDevice == 1)
      {
          if (gamepad_button_check_pressed(global.input_gpIndex, gp_shoulderl) && gamepad_button_check_pressed(global.input_gpIndex, gp_shoulderr))
-@@ -9,11 +13,7 @@ function scr_input_suicide_pressed()
-         }
-         return false;
-     }
--    var _key = input_action_get_key(UnknownEnum.Value_11);
--    if (keyboard_check_pressed(_key))
--    {
--        return true;
--    }
-+    return false;
-     return false;
- }
- 
 diff --git a/gml_GlobalScript_scr_load_settings.gml b/gml_GlobalScript_scr_load_settings.gml
 index fc2dadf..16e3e5e 100644
 --- a/gml_GlobalScript_scr_load_settings.gml
