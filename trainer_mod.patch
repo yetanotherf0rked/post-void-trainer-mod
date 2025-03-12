@@ -1,25 +1,27 @@
-From dfdae1aa372de679d1694d168063def67d29183d Mon Sep 17 00:00:00 2001
+From 341a4b17b68d44af64ccf01cdc025114668a40c2 Mon Sep 17 00:00:00 2001
 From: yetanotherf0rked <58505261+yetanotherf0rked@users.noreply.github.com>
-Date: Wed, 12 Mar 2025 14:41:17 +0100
+Date: Wed, 12 Mar 2025 19:40:48 +0100
 Subject: [PATCH] 1.4c patch
 
 ---
  gml_GlobalScript_Localization.gml             |  2 +-
  gml_GlobalScript_scr_generate_upgrades.gml    |  5 +-
  ...GlobalScript_scr_input_suicide_pressed.gml |  1 -
- gml_GlobalScript_scr_load_settings.gml        |  4 +
+ gml_GlobalScript_scr_load_settings.gml        |  6 ++
  gml_GlobalScript_scr_options_submenu.gml      | 40 ++++++--
  gml_GlobalScript_scr_options_update.gml       | 66 +++++++++++++
  ...balScript_scr_player_draw_gui_elements.gml | 34 ++++---
  gml_GlobalScript_scr_reset_upgrades.gml       |  3 +
  gml_GlobalScript_scr_setup_stats.gml          |  2 +
+ gml_GlobalScript_scr_wb_spawn_enemies.gml     |  3 +
  gml_Object_obj_level_end_timer_Alarm_0.gml    |  3 +-
  gml_Object_obj_options_Step_0.gml             | 93 ++++++++++++++++++-
+ gml_Object_obj_player_Step_0.gml              |  8 +-
  gml_Object_obj_preload_Create_0.gml           |  2 +-
  gml_Object_obj_score_controller_Draw_75.gml   |  5 -
  gml_Object_obj_setup_Create_0.gml             |  2 +-
  gml_Object_obj_stats_screen_Step_0.gml        |  3 +-
- 15 files changed, 233 insertions(+), 32 deletions(-)
+ 17 files changed, 244 insertions(+), 34 deletions(-)
 
 diff --git a/gml_GlobalScript_Localization.gml b/gml_GlobalScript_Localization.gml
 index ef4109a..1a4ed78 100644
@@ -62,10 +64,10 @@ index 0b85402..4afee84 100644
      {
          if (gamepad_button_check_pressed(global.input_gpIndex, gp_shoulderl) && gamepad_button_check_pressed(global.input_gpIndex, gp_shoulderr))
 diff --git a/gml_GlobalScript_scr_load_settings.gml b/gml_GlobalScript_scr_load_settings.gml
-index fc2dadf..16e3e5e 100644
+index fc2dadf..ad7e6a8 100644
 --- a/gml_GlobalScript_scr_load_settings.gml
 +++ b/gml_GlobalScript_scr_load_settings.gml
-@@ -26,6 +26,10 @@ function scr_load_settings(arg0)
+@@ -26,6 +26,12 @@ function scr_load_settings(arg0)
          global.PS5_TRIGGER_FEEDBACK = false;
      }
      global.SETTINGS_LOCALE = ds_map_find_value(_settings, "locale");
@@ -73,6 +75,8 @@ index fc2dadf..16e3e5e 100644
 +    global.LOOP_LEVEL = 0
 +    global.FORCE_UPGRADE = -1
 +    global.START_WITH_UPGRADE = 0
++    global.GOD_MODE = false
++    global.ENEMY_SPAWN = true
      scr_set_acc_mode();
      var _device = ds_map_find_first(global.Input_KeyMapping);
      while (_device != undefined)
@@ -224,7 +228,7 @@ index bd8934c..7878c1a 100644
          }
      }
 diff --git a/gml_GlobalScript_scr_player_draw_gui_elements.gml b/gml_GlobalScript_scr_player_draw_gui_elements.gml
-index db98d1c..0f9bc5f 100644
+index db98d1c..9c2e432 100644
 --- a/gml_GlobalScript_scr_player_draw_gui_elements.gml
 +++ b/gml_GlobalScript_scr_player_draw_gui_elements.gml
 @@ -11,19 +11,31 @@ function scr_player_draw_gui_elements()
@@ -250,7 +254,7 @@ index db98d1c..0f9bc5f 100644
 +        draw_set_color(c_red);
 +        draw_text(10, 90, "HP: " + string(hp) + "/" + string(max_hp));
 +        draw_set_color(c_yellow);
-+        draw_text(10, 100, "God Mode: " + (debug ? "On" : "Off"));
++        draw_text(10, 100, "God Mode: " + (global.GOD_MODE ? "On" : "Off"));
 +        draw_text(10, 110, "Force Upgrade: " + string(global.FORCE_UPGRADE));
 +        draw_text(10, 120, "Loop Level: " + (global.LOOP_LEVEL ? "On" : "Off"));
 +        draw_text(10, 130, "Start Level: " + string(global.START_LEVEL + 1));
@@ -295,6 +299,20 @@ index 0963585..284f90d 100644
      global.CORRIDORS_ONLY = false;
      global.TIME = 0;
      global.LEVEL_TIME = 0;
+diff --git a/gml_GlobalScript_scr_wb_spawn_enemies.gml b/gml_GlobalScript_scr_wb_spawn_enemies.gml
+index 7c0a284..aba2bec 100644
+--- a/gml_GlobalScript_scr_wb_spawn_enemies.gml
++++ b/gml_GlobalScript_scr_wb_spawn_enemies.gml
+@@ -27,6 +27,9 @@ function scr_wb_spawn_enemies()
+     enemy_count = 0;
+     for (i = 0; i < (path_total_length - 1); i += 1)
+     {
++        if (!global.ENEMY_SPAWN)
++            break;
++
+         if (enemy_count < max_enemies && i == enemy_pos[enemy_count])
+         {
+             var _spawn_enemy = true;
 diff --git a/gml_Object_obj_level_end_timer_Alarm_0.gml b/gml_Object_obj_level_end_timer_Alarm_0.gml
 index af12cdb..9380617 100644
 --- a/gml_Object_obj_level_end_timer_Alarm_0.gml
@@ -420,6 +438,39 @@ index 180d26a..144d095 100644
      }
      if (option_type[option_selected] == "menu")
      {
+diff --git a/gml_Object_obj_player_Step_0.gml b/gml_Object_obj_player_Step_0.gml
+index eacf060..9236c08 100644
+--- a/gml_Object_obj_player_Step_0.gml
++++ b/gml_Object_obj_player_Step_0.gml
+@@ -114,6 +114,10 @@ if (global.DEBUG_MODE && keyboard_check_pressed(ord("P")))
+     instance_create_depth(0, 0, 0, obj_idol_splash_effect);
+     scr_create_liquid_splat(x, y, z, irandom(360));
+ }
++if (global.DEBUG_MODE && keyboard_check_pressed(ord("E")))
++{
++    global.ENEMY_SPAWN = !global.ENEMY_SPAWN;
++}
+ if (in_water)
+ {
+     floor_z = water_bottom;
+@@ -853,7 +857,7 @@ if (!in_water)
+     {
+         dbg_godmode ^= (gamepad_button_check(global.input_gpIndex, gp_select) && gamepad_button_check_pressed(global.input_gpIndex, gp_face4));
+     }
+-    if (hp <= 0 && !debug && !instance_exists(obj_liquid_drop))
++    if (hp <= 0 && !global.GOD_MODE && !instance_exists(obj_liquid_drop))
+     {
+         hp = 0;
+         if (!death_countdown)
+@@ -1125,7 +1129,7 @@ if (screen_shake_y_t > 0)
+ }
+ if (global.DEBUG_MODE && keyboard_check_pressed(ord("L")))
+ {
+-    debug = !debug;
++    global.GOD_MODE = !global.GOD_MODE;
+ }
+ noise_ii += noise_is;
+ if (noise_ii >= noise_iis)
 diff --git a/gml_Object_obj_preload_Create_0.gml b/gml_Object_obj_preload_Create_0.gml
 index 56a2c25..1aff613 100644
 --- a/gml_Object_obj_preload_Create_0.gml
