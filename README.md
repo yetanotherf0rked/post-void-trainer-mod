@@ -15,6 +15,7 @@ A trainer for Post Void 1.4c
 * Open the Debug mode by pressing `m`. Inside the debug mode you can:
   * Press `l` to activate god mode (no death countdown when no HP left)
   * Press `n` to skip to the next level
+  * Press `k` to suicide
   * Press `p` to regenerate 20% life
   * Press `Alt` to see colorimetry info
   * Prevents leaderboards submissions
