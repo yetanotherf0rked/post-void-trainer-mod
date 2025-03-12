@@ -1,6 +1,6 @@
-From 8fb194b77321fecb4a387d794d4269b77b342fa7 Mon Sep 17 00:00:00 2001
+From ff09656d5bdbdf9369acf99e9f8b1253a7aeda9f Mon Sep 17 00:00:00 2001
 From: yetanotherf0rked <58505261+yetanotherf0rked@users.noreply.github.com>
-Date: Wed, 12 Mar 2025 05:24:20 +0100
+Date: Wed, 12 Mar 2025 08:19:32 +0100
 Subject: [PATCH] 1.4c patch
 
 ---
@@ -10,15 +10,16 @@ Subject: [PATCH] 1.4c patch
  gml_GlobalScript_scr_load_settings.gml        |  4 +
  gml_GlobalScript_scr_options_submenu.gml      | 40 ++++++--
  gml_GlobalScript_scr_options_update.gml       | 66 +++++++++++++
- ...balScript_scr_player_draw_gui_elements.gml |  5 +-
+ ...balScript_scr_player_draw_gui_elements.gml | 34 ++++---
  gml_GlobalScript_scr_reset_upgrades.gml       |  3 +
  gml_GlobalScript_scr_setup_stats.gml          |  2 +
  gml_Object_obj_level_end_timer_Alarm_0.gml    |  3 +-
  gml_Object_obj_options_Step_0.gml             | 93 ++++++++++++++++++-
  gml_Object_obj_preload_Create_0.gml           |  2 +-
+ gml_Object_obj_score_controller_Draw_75.gml   |  5 -
  gml_Object_obj_setup_Create_0.gml             |  2 +-
  gml_Object_obj_stats_screen_Step_0.gml        |  3 +-
- 14 files changed, 220 insertions(+), 22 deletions(-)
+ 15 files changed, 239 insertions(+), 37 deletions(-)
 
 diff --git a/gml_GlobalScript_Localization.gml b/gml_GlobalScript_Localization.gml
 index ef4109a..1a4ed78 100644
@@ -241,25 +242,49 @@ index bd8934c..7878c1a 100644
          }
      }
 diff --git a/gml_GlobalScript_scr_player_draw_gui_elements.gml b/gml_GlobalScript_scr_player_draw_gui_elements.gml
-index db98d1c..65ca5ea 100644
+index db98d1c..0f9bc5f 100644
 --- a/gml_GlobalScript_scr_player_draw_gui_elements.gml
 +++ b/gml_GlobalScript_scr_player_draw_gui_elements.gml
-@@ -11,7 +11,7 @@ function scr_player_draw_gui_elements()
+@@ -11,19 +11,31 @@ function scr_player_draw_gui_elements()
              draw_sprite(death_cd_sprite[death_cd_number], death_cd_ii, 240 + cd_extra_x[death_cd_number], 135 + cd_extra_y[death_cd_number]);
          }
      }
 -    if (debug)
 +    if (global.DEBUG_MODE)
      {
-         draw_set_color(c_white);
+-        draw_set_color(c_white);
          draw_set_valign(fa_top);
-@@ -24,6 +24,9 @@ function scr_player_draw_gui_elements()
-         draw_text(472, 76, "Level:" + string(global.LEVEL));
-         draw_text(472, 92, "Enemies:" + string(obj_world_builder.enemy_count));
-         draw_text(472, 108, "Zdir:" + string(zdir));
-+	draw_text(472, 124, "h_speed:" + string(hsp));
-+	draw_text(472, 140, "v_speed:" + string(vsp));
-+	draw_text(472, 156, "speed:" + string(sqrt(power(hsp, 2) + power(vsp, 2))));
+-        draw_set_halign(fa_right);
+-        draw_set_font(fnt_debug);
+-        draw_text(472, 16, "Z: " + string(z));
+-        draw_text(472, 32, "falling:" + string(falling));
+-        draw_text(472, 48, "jumping:" + string(jumping));
+-        draw_text(472, 64, "floor_Z:" + string(floor_z));
+-        draw_text(472, 76, "Level:" + string(global.LEVEL));
+-        draw_text(472, 92, "Enemies:" + string(obj_world_builder.enemy_count));
+-        draw_text(472, 108, "Zdir:" + string(zdir));
++        draw_set_halign(fa_left);
++        draw_set_font(fnt_time_bonus_score);
++        draw_set_color(c_red);
++        draw_text(10, 90, "HP: " + string(hp) + "/" + string(max_hp));
++        draw_set_color(c_yellow);
++        draw_text(10, 100, "God Mode: " + (debug ? "On" : "Off"));
++        draw_text(10, 110, "Force Upgrade: " + string(global.FORCE_UPGRADE));
++        draw_text(10, 120, "Loop Level: " + (global.LOOP_LEVEL ? "On" : "Off"));
++        draw_text(10, 130, "Start Level: " + string(global.START_LEVEL + 1));
++        draw_text(10, 140, "Current Level: " + string(global.LEVEL + 1));
++        draw_text(10, 150, "Speed: " + string(sqrt(power(hsp, 2) + power(vsp, 2))));
++        draw_set_color(c_white);
++        draw_text(10, 160, "H_speed: " + string(hsp));
++        draw_text(10, 170, "V_speed: " + string(vsp));
++        draw_text(10, 180, "Z: " + string(z));
++        draw_text(10, 190, "Falling: " + string(falling));
++        draw_text(10, 200, "Jumping: " + string(jumping));
++        draw_text(10, 210, "Floor_Z: " + string(floor_z));
++        draw_text(10, 220, "Enemies: " + string(obj_world_builder.enemy_count));
++        draw_text(10, 230, "Zdir: " + string(zdir));
++        draw_text(10, 240, "FPS: " + string(fps_real));
++
          draw_set_color(hp_bar_border_col);
          draw_rectangle(hp_bar_x - hp_bar_border_wh, hp_bar_y - hp_bar_border_wh, hp_bar_x + hp_bar_w + hp_bar_border_wh, hp_bar_y + hp_bar_h + hp_bar_border_wh, false);
          draw_set_color(hp_bar_col);
@@ -426,6 +451,20 @@ index 56a2c25..1aff613 100644
  global.HS_VERSION = "1";
  global.MENU_FONT = -1;
  assetLoadPhase = 0;
+diff --git a/gml_Object_obj_score_controller_Draw_75.gml b/gml_Object_obj_score_controller_Draw_75.gml
+index 5f2ab1a..b5a61e8 100644
+--- a/gml_Object_obj_score_controller_Draw_75.gml
++++ b/gml_Object_obj_score_controller_Draw_75.gml
+@@ -13,9 +13,4 @@ if ((room == room_game || room == room_score) && global.SHOW_TIME)
+             scr_draw_text_outlined(points_x, levels_start_y + (levels_sep * i), "Level " + string(i + 1) + ": " + level_time[i], 16777215, 0);
+         }
+     }
+-    if (global.DEBUG_MODE)
+-    {
+-        draw_set_valign(fa_bottom);
+-        scr_draw_text_outlined(478, 268, "FPS: " + string(fps_real), 16777215, 0);
+-    }
+ }
 diff --git a/gml_Object_obj_setup_Create_0.gml b/gml_Object_obj_setup_Create_0.gml
 index 747158d..04dadf9 100644
 --- a/gml_Object_obj_setup_Create_0.gml

@@ -10,13 +10,11 @@ A trainer for Post Void 1.4c
   * **Loop level**: When finishing the current level, restart that same level again and stop the run progression (useful for ILs, practice)
   * **Force upgrade**: Select an upgrade to always be given as a first choice at the end of every level (until picked if non-stackable)
   * **Start with upgrade**: Start immediately with force upgrade, instead of having to pick it at the end of the level. Currently only works after the first death/suicide (useful for ILs, practice)
-* Debug mode enabled
-  * Press `l` to exit toggle debug mode
-  * FPS counter
-  * Press `n` on the keyboard to skip to the next level
-  * Press `p` to regenerate life and see some debug info
-  * Press `o` to see a debug message
-  * Press `Alt` to see some debug info
+* Open the Debug mode by pressing `m`. Inside the debug mode you can:
+  * Press `l` to activate god mode (no death countdown when no HP left)
+  * Press `n` to skip to the next level
+  * Press `p` to regenerate 20% life
+  * Press `Alt` to see colorimetry info
   * Prevents leaderboards submissions
 
 ## Installation
